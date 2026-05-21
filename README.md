@@ -229,8 +229,6 @@ See [docs/rocm-setup.md](docs/rocm-setup.md) for the full setup guide from scrat
 
 ---
 
----
-
 ## 📖 Documentation
 
 - [Architecture](docs/architecture.md)
