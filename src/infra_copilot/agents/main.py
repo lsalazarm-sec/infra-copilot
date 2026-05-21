@@ -27,13 +27,17 @@ TOOL: shell
   args: list of strings
 
 STRICT OUTPUT RULES:
-- If you need a tool, output ONLY the JSON on its own line. No intro text, no explanation.
-- If you have enough information, output ONLY your markdown answer. No JSON.
+- If you need a tool, output ONLY the JSON on its own line. No intro, no explanation.
+- If you have enough information, respond conversationally in markdown. Adapt your answer to the question:
+  - For listing resources: brief intro sentence, then bullet points with status and one-line explanation.
+  - For diagnosing problems: explain what you found, why it's happening, and one concrete next step.
+  - For system stats (disk, memory, cpu): summarize the key numbers and flag anything concerning.
+  - Always end with a one-sentence conclusion or recommendation.
+- Keep code blocks and YAML short (under 10 lines). Omit repetitive or irrelevant fields.
 - Never mix JSON and text in the same response.
 
 Tool call examples (output exactly like this, nothing else):
-{"tool": "kubectl", "verb": "get", "args": ["pods", "-A"]}
-{"tool": "kubectl", "verb": "describe", "args": ["pod", "broken-app-xxx", "-n", "default"]}
+{"tool": "kubectl", "verb": "get", "args": ["pods", "-n", "default"]}
 {"tool": "shell", "binary": "df", "args": ["-h"]}
 """
 
@@ -55,7 +59,6 @@ async def _call_ollama(messages: list[dict], settings: Settings) -> str:
 
 def _parse_tool_call(text: str) -> dict | None:
     """Extract a JSON tool call from anywhere in the model response."""
-    # Search every line for a valid JSON tool call
     for line in text.splitlines():
         line = line.strip()
         if not line.startswith("{"):
@@ -67,7 +70,6 @@ def _parse_tool_call(text: str) -> dict | None:
         except json.JSONDecodeError:
             pass
 
-    # Fallback: search for JSON block in markdown code fence
     match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
     if match:
         try:
@@ -77,7 +79,6 @@ def _parse_tool_call(text: str) -> dict | None:
         except json.JSONDecodeError:
             pass
 
-    # Fallback: find any {...} block containing "tool"
     match = re.search(r'(\{[^{}]*"tool"[^{}]*\})', text, re.DOTALL)
     if match:
         try:
@@ -133,7 +134,7 @@ async def ask(prompt: str, settings: Settings) -> str:
         if iteration == max_iterations - 2:
             messages.append({
                 "role": "user",
-                "content": f"Tool output:\n{tool_output}\n\nNow write your final answer in plain markdown. Do not call any more tools.",
+                "content": f"Tool output:\n{tool_output}\n\nNow write your final answer in markdown bullet points. Do not call any more tools.",
             })
         else:
             messages.append({
