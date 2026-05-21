@@ -41,7 +41,9 @@ class CopilotApp(App[None]):
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         with Vertical():
-            yield Markdown("# infra-copilot\n\nAsk anything about your infrastructure.", id="conversation")
+            yield Markdown(
+                "# infra-copilot\n\nAsk anything about your infrastructure.", id="conversation"
+            )
             yield Static("Ready.", id="status")
         yield Input(placeholder="Type your question...")
         yield Footer()

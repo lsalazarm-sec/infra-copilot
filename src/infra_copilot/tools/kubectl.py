@@ -42,8 +42,13 @@ async def kubectl_run(
             reason=f"Verb '{verb}' not in allowlist {settings.safety.kubectl_allowed_verbs}.",
             attempted_command=cmd_str,
         )
-        record(tool="kubectl", inputs={"verb": verb, "args": args},
-               outputs=result.model_dump(), success=False, duration_ms=0)
+        record(
+            tool="kubectl",
+            inputs={"verb": verb, "args": args},
+            outputs=result.model_dump(),
+            success=False,
+            duration_ms=0,
+        )
         return result
 
     if not shutil.which("kubectl"):
@@ -67,10 +72,17 @@ async def kubectl_run(
         truncated = True
 
     result_ok = KubectlResult(
-        command=cmd_str, stdout=stdout, stderr=stderr,
-        return_code=proc.returncode or 0, truncated=truncated,
+        command=cmd_str,
+        stdout=stdout,
+        stderr=stderr,
+        return_code=proc.returncode or 0,
+        truncated=truncated,
     )
-    record(tool="kubectl", inputs={"verb": verb, "args": args},
-           outputs={"return_code": result_ok.return_code}, success=result_ok.return_code == 0,
-           duration_ms=duration_ms)
+    record(
+        tool="kubectl",
+        inputs={"verb": verb, "args": args},
+        outputs={"return_code": result_ok.return_code},
+        success=result_ok.return_code == 0,
+        duration_ms=duration_ms,
+    )
     return result_ok

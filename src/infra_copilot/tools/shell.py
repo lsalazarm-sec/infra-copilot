@@ -29,7 +29,9 @@ class ShellBlocked(BaseModel):
 
 
 async def shell_run(
-    binary: Annotated[str, Field(description="Binary name e.g. 'journalctl'. Must be in allowlist.")],
+    binary: Annotated[
+        str, Field(description="Binary name e.g. 'journalctl'. Must be in allowlist.")
+    ],
     args: Annotated[list[str], Field(description="Arguments to pass to the binary.")],
     settings: Settings,
 ) -> ShellResult | ShellBlocked:
@@ -43,11 +45,14 @@ async def shell_run(
         )
 
     if not shutil.which(binary):
-        return ShellBlocked(reason=f"Binary '{binary}' not found in PATH", attempted_command=cmd_str)
+        return ShellBlocked(
+            reason=f"Binary '{binary}' not found in PATH", attempted_command=cmd_str
+        )
 
     start = time.perf_counter()
     proc = await asyncio.create_subprocess_exec(
-        binary, *args,
+        binary,
+        *args,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
@@ -63,10 +68,17 @@ async def shell_run(
         truncated = True
 
     result = ShellResult(
-        command=cmd_str, stdout=stdout, stderr=stderr,
-        return_code=proc.returncode or 0, truncated=truncated,
+        command=cmd_str,
+        stdout=stdout,
+        stderr=stderr,
+        return_code=proc.returncode or 0,
+        truncated=truncated,
     )
-    record(tool="shell", inputs={"binary": binary, "args": args},
-           outputs={"return_code": result.return_code}, success=result.return_code == 0,
-           duration_ms=duration_ms)
+    record(
+        tool="shell",
+        inputs={"binary": binary, "args": args},
+        outputs={"return_code": result.return_code},
+        success=result.return_code == 0,
+        duration_ms=duration_ms,
+    )
     return result

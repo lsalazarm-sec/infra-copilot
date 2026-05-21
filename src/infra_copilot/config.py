@@ -31,7 +31,16 @@ class SafetyConfig(BaseModel):
         default_factory=lambda: ["get", "describe", "logs", "top", "explain", "version"]
     )
     shell_allowed_cmds: list[str] = Field(
-        default_factory=lambda: ["journalctl", "systemctl", "ps", "ss", "df", "free", "uptime", "ip"]
+        default_factory=lambda: [
+            "journalctl",
+            "systemctl",
+            "ps",
+            "ss",
+            "df",
+            "free",
+            "uptime",
+            "ip",
+        ]
     )
 
 

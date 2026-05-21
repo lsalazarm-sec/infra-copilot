@@ -60,6 +60,7 @@ app.command(name="ask")(ask_cmd)
 def tui() -> None:
     """Launch the interactive TUI."""
     from infra_copilot.ui.tui import run_tui
+
     settings = _load_settings()
     run_tui(settings)
 

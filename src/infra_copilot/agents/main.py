@@ -132,14 +132,18 @@ async def ask(prompt: str, settings: Settings) -> str:
             tool_output = json.dumps({"error": f"Unknown tool: {tool_name}"})
 
         if iteration == max_iterations - 2:
-            messages.append({
-                "role": "user",
-                "content": f"Tool output:\n{tool_output}\n\nNow write your final answer in markdown bullet points. Do not call any more tools.",
-            })
+            messages.append(
+                {
+                    "role": "user",
+                    "content": f"Tool output:\n{tool_output}\n\nNow write your final answer in markdown bullet points. Do not call any more tools.",
+                }
+            )
         else:
-            messages.append({
-                "role": "user",
-                "content": f"Tool output:\n{tool_output}",
-            })
+            messages.append(
+                {
+                    "role": "user",
+                    "content": f"Tool output:\n{tool_output}",
+                }
+            )
 
     return last_response
