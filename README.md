@@ -95,6 +95,8 @@ copilot version          Print version
 ---
 
 ## 🏗️ Architecture
+
+```bash
 User question (CLI / TUI)
 │
 ▼
@@ -120,6 +122,7 @@ The agent uses a **ReAct (Reason + Act) loop** — it reasons about what informa
 
 See [docs/architecture.md](docs/architecture.md) for full design decisions and trade-offs.
 
+```
 ---
 
 ## 🛡️ Safety model
