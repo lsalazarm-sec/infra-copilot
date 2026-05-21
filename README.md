@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🤖 infra-copilot
+# 🤖 bashops-agent
 
 **Ask your infrastructure questions in plain English. Runs 100% locally on your GPU.**
 
-[![CI](https://github.com/lsalazarm-sec/infra-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/lsalazarm-sec/infra-copilot/actions)
+[![CI](https://github.com/lsalazarm-sec/bashops-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/lsalazarm-sec/bashops-agent/actions)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Ollama](https://img.shields.io/badge/Ollama-powered-purple.svg)](https://ollama.com)
@@ -38,7 +38,7 @@
 
 Debugging infrastructure means context-switching between 8 terminal tabs before you even start reasoning about what went wrong — `kubectl`, `journalctl`, `top`, `ss`, logs, events, all at once.
 
-`infra-copilot` is a local LLM agent that does the data gathering for you. You ask a question in plain English, it runs the right commands against your real infrastructure, reads the output, and explains what it found.
+`bashops-agent` is a local LLM agent that does the data gathering for you. You ask a question in plain English, it runs the right commands against your real infrastructure, reads the output, and explains what it found.
 
 **No data leaves your network.** The LLM runs entirely on your GPU via [Ollama](https://ollama.com). No API keys, no subscriptions, no usage costs.
 
@@ -51,7 +51,7 @@ Built and tested on an AMD Radeon RX 7700 XT with ROCm 7.x on Ubuntu 24.04.
 - 🧠 **Local LLM inference** — Qwen 2.5 Coder 14B running on your GPU via Ollama. Swap models with one config change.
 - 🛠️ **Real tool execution** — the agent actually runs `kubectl`, `journalctl`, `df`, `ps`, `ss`, and more. Not a wrapper around `kubectl explain`.
 - 🔒 **Safety-first design** — read-only by default. Strict command allowlist. No shell string interpolation. Every action is audited.
-- 📋 **JSONL audit log** — every command, its arguments, output size, and latency logged to `~/.local/share/infra-copilot/audit.jsonl`.
+- 📋 **JSONL audit log** — every command, its arguments, output size, and latency logged to `~/.local/share/bashops-agent/audit.jsonl`.
 - 🖥️ **TUI + CLI** — interactive Textual UI for conversations, one-shot CLI for scripting.
 - 🔄 **ReAct reasoning loop** — the agent iterates: decide → execute tool → reason about output → decide again, until it has a complete answer.
 - 🐧 **Linux-first, AMD-ready** — built on Ubuntu 24.04 with ROCm 7.x. Works with NVIDIA and CPU too.
@@ -74,8 +74,8 @@ Built and tested on an AMD Radeon RX 7700 XT with ROCm 7.x on Ubuntu 24.04.
 ollama pull qwen2.5-coder:14b
 
 # Clone and install
-git clone https://github.com/lsalazarm-sec/infra-copilot.git
-cd infra-copilot
+git clone https://github.com/lsalazarm-sec/bashops-agent.git
+cd bashops-agent
 uv sync
 
 # Initialize config
@@ -144,7 +144,7 @@ Security is a first-class concern. The agent cannot do anything you haven't expl
 | Guardrail | Default | Override |
 |---|---|---|
 | Read-only mode | ✅ ON | `--write` flag (not yet implemented) |
-| kubectl allowed verbs | `get`, `describe`, `logs`, `top`, `explain`, `version` | `~/.config/infra-copilot/config.yaml` |
+| kubectl allowed verbs | `get`, `describe`, `logs`, `top`, `explain`, `version` | `~/.config/bashops-agent/config.yaml` |
 | Shell allowed binaries | `journalctl`, `systemctl`, `ps`, `ss`, `df`, `free`, `uptime`, `ip` | `config.yaml` |
 | No shell string interpolation | Always | Not overridable |
 | Audit log | Always on | `config.yaml` |
@@ -155,7 +155,7 @@ Security is a first-class concern. The agent cannot do anything you haven't expl
 
 ## ⚙️ Configuration
 
-Default config is created at `~/.config/infra-copilot/config.yaml` by running `copilot init`:
+Default config is created at `~/.config/bashops-agent/config.yaml` by running `copilot init`:
 
 ```yaml
 llm:
@@ -241,8 +241,8 @@ See [docs/rocm-setup.md](docs/rocm-setup.md) for the full setup guide from scrat
 ## 🛠️ Development
 
 ```bash
-git clone https://github.com/lsalazarm-sec/infra-copilot.git
-cd infra-copilot
+git clone https://github.com/lsalazarm-sec/bashops-agent.git
+cd bashops-agent
 uv sync --all-extras --dev
 
 # Run tests
