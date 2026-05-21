@@ -223,7 +223,31 @@ See [docs/rocm-setup.md](docs/rocm-setup.md) for the full setup guide from scrat
 - [ROCm setup guide](docs/rocm-setup.md)
 - [Adding a custom tool](docs/custom-tools.md)
 - [Configuration reference](docs/configuration.md)
+## 🗺️ Roadmap
 
+### v0.1 — Core agent (current)
+- [x] ReAct agent with kubectl and shell tools
+- [x] JSONL audit log
+- [x] CLI (one-shot queries)
+- [x] TUI (interactive sessions)
+- [x] Safety allowlist
+- [x] Adaptive response format
+
+### v0.2 — Observability
+- [ ] Prometheus / PromQL tool
+- [ ] Node metrics and resource pressure detection
+- [ ] Multi-cluster context switching
+
+### v0.3 — Security integrations
+- [ ] Wazuh API tool — query alerts, agents, and security events
+- [ ] SSH executor (opt-in per host)
+- [ ] Alert correlation across kubectl + Wazuh
+
+### v0.4 — Polish
+- [ ] RAG over runbooks and postmortems
+- [ ] Session export to Markdown
+- [ ] Write mode with confirmation prompt
+- [ ] Plugin system for custom tools
 ---
 
 ## 🛠️ Development
