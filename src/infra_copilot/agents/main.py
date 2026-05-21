@@ -26,18 +26,19 @@ TOOL: shell
   binary: string (journalctl, systemctl, ps, ss, df, free, uptime, ip)
   args: list of strings
 
-To use a tool, respond ONLY with valid JSON in this exact format:
+HOW TO USE TOOLS:
+If you need to run a command, respond with ONLY a JSON object on a single line, nothing else:
 {"tool": "kubectl", "verb": "get", "args": ["pods", "-n", "kube-system"]}
 {"tool": "shell", "binary": "df", "args": ["-h"]}
 
-After receiving tool output, reason about it and give a final answer.
-When you have enough information, respond with plain markdown — no JSON.
+After you receive the tool output, analyze it and write your final answer in plain markdown.
+Your final answer must NOT contain any JSON.
 
-Rules:
-- Always gather evidence with tools before answering.
-- Be concise. Explain WHY based on actual output.
-- Never fabricate command output.
-- Mark any suggested fixes clearly as suggestions.
+IMPORTANT:
+- One tool call per response.
+- If you already have enough information, answer directly in markdown. Do not call more tools.
+- Never fabricate output. Only reason about what tools actually return.
+- Keep answers concise and factual.
 """
 
 
@@ -50,7 +51,7 @@ async def _call_ollama(messages: list[dict], settings: Settings) -> str:
                 "model": settings.llm.model,
                 "messages": messages,
                 "stream": False,
-                "options": {"temperature": settings.llm.temperature},
+                "options": {"temperature": 0.1},
             },
         )
         response.raise_for_status()
@@ -60,13 +61,24 @@ async def _call_ollama(messages: list[dict], settings: Settings) -> str:
 def _parse_tool_call(text: str) -> dict | None:
     """Extract a JSON tool call from the model response if present."""
     text = text.strip()
-    # Try direct JSON parse first
+
+    # Try direct JSON parse
     try:
         data = json.loads(text)
         if "tool" in data:
             return data
     except json.JSONDecodeError:
         pass
+
+    # Try first line only (model sometimes adds explanation after JSON)
+    first_line = text.split("\n")[0].strip()
+    try:
+        data = json.loads(first_line)
+        if "tool" in data:
+            return data
+    except json.JSONDecodeError:
+        pass
+
     # Try extracting JSON from markdown code block
     match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
     if match:
@@ -76,6 +88,7 @@ def _parse_tool_call(text: str) -> dict | None:
                 return data
         except json.JSONDecodeError:
             pass
+
     return None
 
 
@@ -86,12 +99,16 @@ async def ask(prompt: str, settings: Settings) -> str:
         {"role": "user", "content": prompt},
     ]
 
-    max_iterations = 6
-    for _ in range(max_iterations):
+    max_iterations = 8
+    last_response = ""
+
+    for iteration in range(max_iterations):
         response = await _call_ollama(messages, settings)
+        last_response = response
         messages.append({"role": "assistant", "content": response})
 
         tool_call = _parse_tool_call(response)
+
         if tool_call is None:
             # No tool call — this is the final answer
             return response
@@ -119,6 +136,16 @@ async def ask(prompt: str, settings: Settings) -> str:
         else:
             tool_output = json.dumps({"error": f"Unknown tool: {tool_name}"})
 
-        messages.append({"role": "user", "content": f"Tool output:\n{tool_output}"})
+        # After last iteration force a final answer
+        if iteration == max_iterations - 2:
+            messages.append({
+                "role": "user",
+                "content": f"Tool output:\n{tool_output}\n\nNow give your final answer in plain markdown. Do not call any more tools.",
+            })
+        else:
+            messages.append({
+                "role": "user",
+                "content": f"Tool output:\n{tool_output}",
+            })
 
-    return "Reached maximum iterations without a final answer."
+    return last_response
