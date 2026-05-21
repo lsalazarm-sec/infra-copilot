@@ -87,11 +87,13 @@ copilot tui
 ```
 
 ### Available commands
+
+```
 copilot ask <question>   One-shot query
 copilot tui              Interactive TUI session
 copilot init             Create default config file
 copilot version          Print version
-
+```
 ---
 
 ## 🏗️ Architecture
