@@ -203,28 +203,6 @@ See [docs/rocm-setup.md](docs/rocm-setup.md) for the full setup guide from scrat
 
 ## 🗺️ Roadmap
 
-- [x] ReAct agent with kubectl and shell tools
-- [x] JSONL audit log
-- [x] CLI (one-shot queries)
-- [x] TUI (interactive sessions)
-- [x] Safety allowlist
-- [ ] Prometheus / PromQL tool
-- [ ] SSH executor (opt-in per host)
-- [ ] RAG over runbooks and postmortems
-- [ ] Session export to Markdown
-- [ ] Multi-cluster context switching
-- [ ] Write mode with confirmation prompt
-
----
-
-## 📖 Documentation
-
-- [Architecture](docs/architecture.md)
-- [ROCm setup guide](docs/rocm-setup.md)
-- [Adding a custom tool](docs/custom-tools.md)
-- [Configuration reference](docs/configuration.md)
-## 🗺️ Roadmap
-
 ### v0.1 — Core agent (current)
 - [x] ReAct agent with kubectl and shell tools
 - [x] JSONL audit log
@@ -248,6 +226,18 @@ See [docs/rocm-setup.md](docs/rocm-setup.md) for the full setup guide from scrat
 - [ ] Session export to Markdown
 - [ ] Write mode with confirmation prompt
 - [ ] Plugin system for custom tools
+
+---
+
+---
+
+## 📖 Documentation
+
+- [Architecture](docs/architecture.md)
+- [ROCm setup guide](docs/rocm-setup.md)
+- [Adding a custom tool](docs/custom-tools.md)
+- [Configuration reference](docs/configuration.md)
+
 ---
 
 ## 🛠️ Development
