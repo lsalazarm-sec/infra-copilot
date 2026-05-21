@@ -20,6 +20,18 @@
 
 ![infra-copilot demo](docs/demo/demo.gif)
 
+### CLI — one-shot queries
+![CLI demo](docs/demo/demo.gif)
+
+> Ask a question, get an answer. The agent runs `kubectl` and shell commands under the hood,
+> reasons about the real output, and responds in plain English. No copy-pasting, no tab switching.
+
+### TUI — interactive session
+![TUI demo](docs/demo/tui-demo.gif)
+
+> The interactive mode lets you have a back-and-forth conversation with your infrastructure.
+> Each question builds on the context of the session. Press `Ctrl+C` to exit.
+
 > The agent runs `kubectl` and `df` under the hood, reasons about the output, and responds in plain English. No copy-pasting commands, no tab switching.
 
 ---
