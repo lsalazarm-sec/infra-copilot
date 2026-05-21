@@ -18,8 +18,6 @@
 
 ## 🎬 Demo
 
-![infra-copilot demo](docs/demo/demo.gif)
-
 ### CLI — one-shot queries
 ![CLI demo](docs/demo/demo.gif)
 
